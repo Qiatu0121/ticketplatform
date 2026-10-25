@@ -1,0 +1,230 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: #f5f7fa;
+  color: #303133;
+  overflow-x: hidden; /* 全屏背景铺满时防止出现横向滚动条 */
+}
+
+/* 通用工具类 */
+.mb { margin-bottom: 16px; }
+.mt { margin-top: 12px; }
+.w-full { width: 100%; }
+
+/* ===== 登录/注册页 ===== */
+.auth-page {
+  position: relative;
+  margin-top: -24px; /* 抵消 main 的内边距 */
+  margin-bottom: -24px;
+  margin-left: calc(50% - 50vw); /* 向左扩展到视口左缘 */
+  margin-right: 0;
+  width: 100vw; /* 铺满整个视口宽度，左右不留白 */
+  min-height: calc(100vh - 56px); /* 视口高度 - 顶栏 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #fff4f0 0%, #ffeaf2 100%);
+  overflow: hidden;
+}
+/* 背景柔光色斑（缓慢漂移） */
+.auth-page::before,
+.auth-page::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.4;
+  pointer-events: none;
+  animation: blobDrift 16s ease-in-out infinite alternate;
+}
+.auth-page::before {
+  width: 340px;
+  height: 340px;
+  background: #ff512f;
+  top: -80px;
+  left: -60px;
+}
+.auth-page::after {
+  width: 300px;
+  height: 300px;
+  background: #dd2476;
+  bottom: -80px;
+  right: -50px;
+  animation-delay: -6s;
+}
+@keyframes blobDrift {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(40px, 30px) scale(1.15); }
+}
+/* 漂浮粒子 */
+.particles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.particle {
+  position: absolute;
+  bottom: -40px;
+  line-height: 1;
+  opacity: 0;
+  animation: floatUp linear infinite;
+  will-change: transform, opacity;
+}
+@keyframes floatUp {
+  0%   { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+  12%  { opacity: 0.85; }
+  85%  { opacity: 0.6; }
+  100% { transform: translateY(-105vh) translateX(var(--drift, 0px)) rotate(24deg); opacity: 0; }
+}
+.auth-card {
+  position: relative;
+  width: 860px;
+  max-width: 100%;
+  display: flex;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 24px 60px rgba(220, 60, 90, 0.18);
+  animation: cardIn 0.6s ease-out both;
+}
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(26px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+/* 左栏：品牌渐变面板 */
+.auth-left {
+  width: 42%;
+  padding: 44px 36px;
+  color: #fff;
+  background: linear-gradient(150deg, #ff512f 0%, #dd2476 100%);
+  display: flex;
+  align-items: center;
+}
+.auth-left-logo {
+  font-size: 46px;
+  line-height: 1;
+  margin-bottom: 18px;
+  display: inline-block;
+  animation: float 3s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+.auth-left h2 {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.auth-left-tagline {
+  font-size: 14px;
+  opacity: 0.85;
+  margin-bottom: 28px;
+}
+.auth-features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.auth-features li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  opacity: 0.95;
+  animation: fadeUp 0.5s ease both;
+}
+.auth-features li:nth-child(1) { animation-delay: 0.35s; }
+.auth-features li:nth-child(2) { animation-delay: 0.45s; }
+.auth-features li:nth-child(3) { animation-delay: 0.55s; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 0.95; transform: translateY(0); }
+}
+/* 右栏：表单 */
+.auth-right {
+  flex: 1;
+  padding: 44px 48px;
+}
+.auth-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1f2328;
+  margin-bottom: 6px;
+}
+.auth-sub {
+  font-size: 14px;
+  color: #909399;
+  margin-bottom: 24px;
+}
+.auth-right .el-form-item__label {
+  font-weight: 600;
+  color: #3f434a;
+}
+.auth-right .el-input__wrapper {
+  border-radius: 8px;
+}
+/* 主按钮（品牌渐变，hover 上浮） */
+.primary-btn {
+  width: 100%;
+  margin-top: 4px;
+  border: none;
+  background-image: linear-gradient(135deg, #ff512f, #dd2476);
+  color: #fff;
+  --el-button-text-color: #fff;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.primary-btn:hover {
+  background-image: linear-gradient(135deg, #f04a2a, #cf1f6b);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(221, 36, 118, 0.35);
+  color: #fff;
+}
+.primary-btn:active {
+  background-image: linear-gradient(135deg, #e04326, #c01b63);
+  transform: translateY(0);
+  color: #fff;
+}
+.auth-alt {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 14px;
+  color: #5f6672;
+}
+.auth-alt a {
+  color: #dd2476;
+  font-weight: 600;
+  text-decoration: none;
+}
+.auth-alt a:hover {
+  text-decoration: underline;
+}
+@media (max-width: 720px) {
+  .auth-left {
+    display: none;
+  }
+  .auth-card {
+    width: 400px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .auth-card,
+  .auth-left-logo,
+  .auth-features li,
+  .particle,
+  .auth-page::before,
+  .auth-page::after,
+  .primary-btn {
+    animation: none !important;
+    transition: none !important;
+  }
+}

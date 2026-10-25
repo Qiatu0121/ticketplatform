@@ -1,0 +1,77 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # 敏感值为环境变量；也可复制 backend/application-local.yml.example 为
+    # backend/application-local.yml 后通过 additional-location 加载
+    url: ${DB_URL:jdbc:mysql://localhost:3306/ticket_platform?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  redis:
+    host: localhost
+    port: 6379
+    database: 1
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
+    # 发布确认与不可路由消息返回，发布失败由 Outbox 重试
+    publisher-confirm-type: correlated
+    publisher-returns: true
+    template:
+      mandatory: true
+    listener:
+      simple:
+        acknowledge-mode: auto
+        prefetch: 10
+        concurrency: 2
+        max-concurrency: 5
+        # 重试耗尽后拒绝消息，由队列 DLX 转入死信队列
+        default-requeue-rejected: false
+        retry:
+          enabled: true
+          max-attempts: 3
+          initial-interval: 1000
+          multiplier: 2
+          max-interval: 5000
+  task:
+    scheduling:
+      pool:
+        size: 4
+
+mybatis-plus:
+  configuration:
+    # 数据库下划线字段映射到 Java 驼峰属性
+    map-underscore-to-camel-case: true
+    default-enum-type-handler: com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler
+    # 输出实际执行的 SQL，便于本地排查
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+  file:
+    name: logs/app.log
+
+# 异步下单参数
+app:
+  async-order:
+    # 请求从提交到最终成功/失败的最长等待时间
+    request-ttl-seconds: 180
+    watchdog-fixed-delay-ms: 10000
+    watchdog-batch-size: 100
+    relay-fixed-delay-ms: 1000
+    relay-batch-size: 50
+    # 已确认发布但请求仍未成功时的重新发布间隔
+    republish-interval-seconds: 30
+    publish-confirm-timeout-seconds: 3
+    publish-retry-base-seconds: 2
+    publish-retry-max-seconds: 60
+    # Redis 回补幂等标记保留时间
+    redis-rollback-marker-ttl-days: 7
+  security:
+    # 默认管理员仅在这些环境变量配置后创建；密码为空时跳过创建
+    root-username: ${ROOT_ADMIN_USERNAME:root}
+    root-password: ${ROOT_ADMIN_PASSWORD:}
+    root-phone: ${ROOT_ADMIN_PHONE:00000000000}

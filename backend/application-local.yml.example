@@ -1,0 +1,27 @@
+# 本地私有配置示例。
+# 使用方法：
+#   1. 复制为 backend/application-local.yml
+#   2. 填入本地真实值
+#   3. 从 backend 目录启动：
+#      mvn spring-boot:run -Dspring-boot.run.arguments="--spring.config.additional-location=file:./application-local.yml"
+#
+# application-local.yml 已被 .gitignore 忽略，禁止提交真实凭据。
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/ticket_platform?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: <YOUR_DB_USERNAME>
+    password: <YOUR_DB_PASSWORD>
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: <YOUR_RABBITMQ_USERNAME>
+    password: <YOUR_RABBITMQ_PASSWORD>
+
+app:
+  security:
+    root-username: root
+    # 至少 8 位；留空则不创建默认管理员
+    root-password: ""
+    root-phone: "00000000000"
